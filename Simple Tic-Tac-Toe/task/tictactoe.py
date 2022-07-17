@@ -1,7 +1,7 @@
 
 
 def evaluate_row(row: list):
-    if "_" in row:
+    if " " in row:
         return "row not finished"
     elif "X" in row and not "O" in row:
         return "X"
@@ -9,6 +9,23 @@ def evaluate_row(row: list):
         return "O"
     else:
         return "draw"
+
+def check_cell(cell: tuple, grid: list):
+    try:
+        row = int(cell[0])
+        col = int(cell[1])
+    except Exception:
+        print("You should enter numbers!")
+        return False
+    else:
+        if row not in (1, 2, 3) or col not in (1, 2, 3):
+            print("Coordinates should be from 1 to 3!")
+            return False
+        elif grid[row - 1][col - 1] != " ":
+            print("This cell is occupied! Choose another one!")
+            return False
+        else:
+            return row, col
 
 
 def is_grid_possible(grid: list):
@@ -31,6 +48,20 @@ def create_grid(data: list):
 
     return grid
 
+
+def empty_grid():
+    return [[" ", " ", " "],
+            [" ", " ", " "],
+            [" ", " ", " "]]
+
+def print_grid(grid: list):
+    print("-" * 9)
+    for row in grid:
+        print("|", end="")
+        for value in row:
+            print(" ", value, sep="", end="")
+        print(" |")
+    print("-" * 9)
 
 def evaluate_grid(grid: list):
     if not is_grid_possible(grid):
@@ -63,14 +94,23 @@ def evaluate_grid(grid: list):
         return "Game not finished"
 
 
-data = list(input())
-grid = create_grid(data)
+grid = empty_grid()
+print_grid(grid)
+player = "X"
+while True:
+    turn = check_cell(tuple(input().split()), grid)
+    if turn:
+        grid[turn[0] - 1][turn[1] - 1] = player
+        if player == "X":
+            player = "O"
+        else:
+            player = "X"
+        print_grid(grid)
+        result = evaluate_grid(grid)
+        if result != "Game not finished":
+            print(result)
+            break
 
-print("-" * 9)
-for row in grid:
-    print("|", end="")
-    for value in row:
-        print(" ", value, sep="", end="")
-    print(" |")
-print("-" * 9)
-print(evaluate_grid(grid))
+
+
+
